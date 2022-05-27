@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <title>一潮一汐</title>
+</head>
+
+<body>
+    <h1>あるところの潮汐</h1>
+    <div>
+        <p id="highTide">満潮:</p>
+        <p id="lowTide">干潮:</p>
+    </div>
+    <script>
+        let date = new Date;
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var month_str = month < 10 ? "0"+String(month) : String(month);
+        var day = date.getDate();
+        let date_string = year + "-" + month_str + "-" + day;
+        console.log(date_string);
+        console.log("https://tide736.net/api/get_tide.php?pc=1&hc=1&yr=" + year + "&mn=" + month + "&dy=" + day + "&rg=day");
+        test = fetch("https://tide736.net/api/get_tide.php?pc=1&hc=1&yr=" + year + "&mn=" + month + "&dy=" + day + "&rg=day")
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    throw new Error();
+                }
+            })
+            .then(data => {
+                updateDisplay(data);
+                console.log(data.tide.chart[date_string].edd)
+                console.log(data.tide.chart[date_string].flood)
+            })
+        function updateDisplay(data){
+            console.log(document.getElementById("highTide").innerText = "満潮:"+ data.tide.chart[date_string].flood[0].time + ", " + data.tide.chart[date_string].flood[1].time);
+            console.log(document.getElementById("lowTide").innerText = "干潮:"+ data.tide.chart[date_string].edd[0].time + ", " + data.tide.chart[date_string].edd[1].time);
+        }
+    </script>
+</body>
+
+</html>
